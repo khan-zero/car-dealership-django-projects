@@ -1,0 +1,80 @@
+/* styles.css */
+
+body {
+    font-family: 'Arial', sans-serif;
+    background: linear-gradient(135deg, #1c1c1c, #2e2e2e);
+    margin: 0;
+    padding: 0;
+    color: #f4f4f4;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.container {
+    background-color: #333;
+    padding: 2em;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    width: 100%;
+    max-width: 400px;
+    text-align: center;
+}
+
+h1 {
+    color: #f4c10f;
+    margin-bottom: 1.5em;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+}
+
+input[type="text"],
+input[type="email"],
+input[type="password"] {
+    background-color: #444;
+    border: 1px solid #555;
+    padding: 0.75em;
+    margin-bottom: 1em;
+    border-radius: 5px;
+    color: #f4f4f4;
+}
+
+input[type="submit"],
+.button {
+    background-color: #f4c10f;
+    border: none;
+    padding: 0.75em;
+    border-radius: 5px;
+    color: #1c1c1c;
+    font-size: 1em;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+input[type="submit"]:hover,
+.button:hover {
+    background-color: #e6b50d;
+}
+
+p {
+    margin-top: 1em;
+}
+
+a {
+    color: #f4c10f;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+a:hover {
+    color: #e6b50d;
+}
+
+.message {
+    color: #f4c10f;
+    margin-top: 1em;
+}

@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+
+{% load static %}
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Logout</title>
+    <link rel="stylesheet" href="{% static 'styles.css' %}">
+</head>
+<body>
+    <div class="container">
+        <h1>Logout</h1>
+        <p>Are you sure you want to log out?</p>
+        <form method="POST">
+            {% csrf_token %}
+            <input type="submit" value="Logout">
+        </form>
+        <p><a href="{% url 'dashboard' %}">Cancel</a></p>
+    </div>
+</body>
+</html>
+
