@@ -1,11 +1,72 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.forms import AuthenticationForm
+from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+from django.http import HttpResponse
 
 from .forms import UserRegistrationForm
 from .models import WellcomeHerro, Vehicles, Services, ClientsReviews, Partner, TopBrands
+#from .decorators import unauthorized_user, allowed_users, admin_only
 
+
+#wrappers:
+def unauthorized_user(view_func):
+    def wrapper_func(request, *args, **kwargs):
+        if request.user.is_authenticated:
+            return redirect('index')
+        else:
+            return view_func(request, *args, **kwargs)
+    return wrapper_func
+
+def allowed_users(allowed_roles=[]):
+    def decorator(view_func):
+        def wrapper_func(request, *args, **kwargs):
+            group = None
+            if request.user.groups.exists():
+                group = request.user.groups.all()[0].name
+            if group in allowed_roles:
+                return view_func(request, *args, **kwargs)
+            else:
+                return HttpResponse("You are not authorized to view this page.")
+        return wrapper_func
+    return decorator
+
+def admin_only(view_func):
+    def wrapper_func(request, *args, **kwargs):
+        group = None
+        if request.user.groups.exists():
+            group = request.user.groups.all()[0].name
+        if group == "customer":
+            return redirect('user-page')
+        elif group == "admin":
+            return view_func(request, *args, **kwargs)
+        else:
+            return HttpResponse("You are not authorized to view this page.")
+    return wrapper_func
+
+
+
+#views -------------------------------------------------------------------------------------------------------------
+
+
+
+
+
+
+from django.shortcuts import render, redirect
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.forms import AuthenticationForm
+from django.contrib.auth.decorators import login_required
+from django.contrib import messages
+from django.http import HttpResponse
+
+from .forms import UserRegistrationForm
+from .models import WellcomeHerro, Vehicles, Services, ClientsReviews, Partner, TopBrands
+#from .decorators import unauthorized_user, allowed_users, admin_only
+
+
+@login_required(login_url='login')
 def index(request):
     return render(request, 'index.html')
 
@@ -47,6 +108,29 @@ def info(request):
 
     return render(request, 'info.html', context)
 
+@admin_only
+def dashboard(request):
+
+    welcome = WellcomeHerro.objects.all()
+    vehicles = Vehicles.objects.all()
+    services = Services.objects.all()
+    client_reviews = ClientsReviews.objects.all()
+    partners = Partner.objects.all()
+    top_brands = TopBrands.objects.all()
+    
+    context = {
+        'wellcome_herro':welcome,
+        'vehicles':vehicles,
+        'services':services,
+        'client_reviews':client_reviews,
+        'partners':partners,
+        'top_brands':top_brands,
+    }
+
+
+    return render(request, 'dashboard.html', context)
+
+
 def login_view(request):
     if request.method == 'POST':
         form = AuthenticationForm(request, data=request.POST)
@@ -85,25 +169,3 @@ def register_view(request):
         form = UserRegistrationForm()
         
     return render(request, 'register.html', {'form': form})
-
-def dashboard(request):
-
-    welcome = WellcomeHerro.objects.all()
-    vehicles = Vehicles.objects.all()
-    services = Services.objects.all()
-    client_reviews = ClientsReviews.objects.all()
-    partners = Partner.objects.all()
-    top_brands = TopBrands.objects.all()
-    
-    context = {
-        'wellcome_herro':welcome,
-        'vehicles':vehicles,
-        'services':services,
-        'client_reviews':client_reviews,
-        'partners':partners,
-        'top_brands':top_brands,
-    }
-
-
-    return render(request, 'dashboard.html', context)
-
